@@ -36,28 +36,28 @@ const slides = [
 const showreelVideos = [
     {
         id: 1,
-        title: "Commercial Showreel I",
-        url: "https://www.youtube.com/embed/y4z0wVTi-ko",
+        title: "Documentary Showreel I",
+        url: "https://www.youtube.com/embed/OU8WlwmZt8Y",
     },
     {
         id: 2,
-        title: "Commercial Showreel II",
-        url: "https://www.youtube.com/embed/XFBdBzwXbk4",
+        title: "Documentary Showreel II",
+        url: "https://www.youtube.com/embed/a9OXIPJvRVY",
     },
     {
         id: 3,
-        title: "Commercial Showreel III",
-        url: "https://www.youtube.com/embed/TKsKVoyp8fg",
+        title: "Documentary Showreel III",
+        url: "https://www.youtube.com/embed/wQHgpZl3jPM",
     },
     {
         id: 4,
-        title: "Commercial Showreel IV",
-        url: "https://www.youtube.com/embed/GuMUYlnq0Zs",
+        title: "Documentary Showreel IV",
+        url: "https://www.youtube.com/embed/ONrXo2hv2Ao",
     },
     {
         id: 5,
-        title: "Commercial Showreel V",
-        url: "https://www.youtube.com/embed/HWClrASIpb0",
+        title: "Documentary Showreel V",
+        url: "https://www.youtube.com/embed/oBDvtRmx4-Y",
     },
 ];
 

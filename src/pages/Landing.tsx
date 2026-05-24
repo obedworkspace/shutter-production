@@ -5,13 +5,11 @@ import ServicesSection from "@/components/ServicesSection";
 import PortfolioSection from "@/components/PortfolioSection";
 import ContactSection from "@/components/ContactSection";
 import Footer from "@/components/Footer";
-import { PremiumEffects } from "@/components/PremiumEffects";
 import { MessageCircle } from "lucide-react";
 
 const Landing = () => {
     return (
         <div className="min-h-screen bg-background text-foreground font-sans selection:bg-gold/30 overflow-hidden">
-            <PremiumEffects />
             <Navbar />
             <main>
                 <HeroCarousel />
