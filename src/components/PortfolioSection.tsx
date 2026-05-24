@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Play } from "lucide-react";
+import { Play, ChevronLeft, ChevronRight } from "lucide-react";
 import { optimizeImage } from "@/lib/image-optimizer";
 import {
     Dialog,
@@ -33,68 +33,90 @@ const PortfolioSection = () => {
     });
     const visibleItems = filteredItems.slice(0, visibleCount);
 
+    const handleNext = () => {
+        if (!selectedItem) return;
+        const currentIndex = filteredItems.findIndex(item => item.id === selectedItem.id);
+        if (currentIndex === -1) return;
+        const nextIndex = (currentIndex + 1) % filteredItems.length;
+        setSelectedItem(filteredItems[nextIndex]);
+    };
+
+    const handlePrev = () => {
+        if (!selectedItem) return;
+        const currentIndex = filteredItems.findIndex(item => item.id === selectedItem.id);
+        if (currentIndex === -1) return;
+        const prevIndex = (currentIndex - 1 + filteredItems.length) % filteredItems.length;
+        setSelectedItem(filteredItems[prevIndex]);
+    };
+
+    useEffect(() => {
+        if (!selectedItem) return;
+        const handleKeyDown = (e: KeyboardEvent) => {
+            if (e.key === "ArrowRight") handleNext();
+            if (e.key === "ArrowLeft") handlePrev();
+        };
+        window.addEventListener("keydown", handleKeyDown);
+        return () => {
+            window.removeEventListener("keydown", handleKeyDown);
+        };
+    }, [selectedItem, filteredItems]);
+
     return (
         <section id="portfolio" className="py-24 bg-background">
             <div className="container mx-auto px-4">
                 <div className="text-center mb-20">
                     <h2 className="text-4xl md:text-6xl font-bold mb-4 text-[#0C3249] dark:text-foreground tracking-tight">
-                        Featured Work
+                        Our Work
                     </h2>
-                    <div className="w-24 h-1.5 bg-[#0C3249] mx-auto rounded-full mb-6" />
-                    <p className="text-[#64748b] text-xl md:text-2xl font-medium max-w-2xl mx-auto">
-                        A selection of our documentary, corporate and commercial productions.
-                    </p>
+                    <div className="w-24 h-1.5 bg-gold mx-auto rounded-full mb-12" />
+
+                    {/* Media Type Selector (Videos / Pictures) */}
+                    <div className="flex justify-center gap-4 mb-8">
+                        {["Videos", "Pictures"].map((type) => (
+                            <button
+                                key={type}
+                                onClick={() => {
+                                    setActiveMediaType(type);
+                                    setVisibleCount(6);
+                                }}
+                                className={cn(
+                                    "px-6 py-2 rounded-full text-sm font-semibold tracking-wider transition-all duration-300 border cursor-pointer",
+                                    activeMediaType === type
+                                        ? "bg-gold text-black border-gold shadow-md"
+                                        : "bg-transparent text-muted-foreground border-border hover:text-foreground"
+                                )}
+                            >
+                                {type}
+                            </button>
+                        ))}
+                    </div>
+
+                    {/* Category Selector */}
+                    <div className="flex flex-wrap justify-center gap-4">
+                        {categories.map((category) => (
+                            <button
+                                key={category}
+                                onClick={() => {
+                                    setActiveCategory(category);
+                                    setVisibleCount(6);
+                                }}
+                                className={cn(
+                                    "px-8 py-3 rounded-full text-sm font-bold tracking-wider transition-all duration-300 border cursor-pointer",
+                                    activeCategory === category
+                                        ? "bg-[#0C3249] text-white border-[#0C3249] shadow-lg shadow-[#0C3249]/20"
+                                        : "bg-transparent text-muted-foreground border-border hover:border-foreground/30 hover:text-foreground"
+                                )}
+                            >
+                                {category}
+                            </button>
+                        ))}
+                    </div>
                 </div>
 
-                {/* Main Category Filters */}
-                <div className="flex flex-wrap justify-center gap-4 mb-8">
-                    {categories.map((cat) => (
-                        <Button
-                            key={cat}
-                            variant={activeCategory === cat ? "default" : "outline"}
-                            onClick={() => {
-                                setActiveCategory(cat);
-                                setVisibleCount(6);
-                            }}
-                            className={cn(
-                                "rounded-full px-8 py-6 text-base font-semibold transition-all duration-300",
-                                activeCategory === cat
-                                    ? "bg-[#0C3249] text-white hover:bg-[#0C3249]/90 shadow-lg shadow-[#0C3249]/20"
-                                    : "bg-white text-[#0C3249] border-[#0C3249] hover:bg-gray-50 hover:text-[#0C3249]"
-                            )}
-                        >
-                            {cat}
-                        </Button>
-                    ))}
-                </div>
-
-                {/* Media Type Filters (Videos / Frames) */}
-                <div className="flex flex-wrap justify-center gap-4 mb-16">
-                    {["Videos", "Frames"].map((type) => (
-                        <Button
-                            key={type}
-                            variant={activeMediaType === type ? "default" : "outline"}
-                            onClick={() => {
-                                setActiveMediaType(type);
-                                setVisibleCount(6);
-                            }}
-                            className={cn(
-                                "rounded-full px-8 py-2 text-sm font-medium transition-all duration-300",
-                                activeMediaType === type
-                                    ? "bg-[#f1f5f9] text-[#0C3249] border border-transparent shadow-sm"
-                                    : "bg-white text-[#64748b] border-gray-200 hover:bg-gray-50"
-                            )}
-                        >
-                            {type}
-                        </Button>
-                    ))}
-                </div>
-
-                {/* Grid */}
                 {/* Grid */}
                 <motion.div
                     layout
-                    className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10"
+                    className="grid md:grid-cols-2 lg:grid-cols-3 gap-8"
                 >
                     <AnimatePresence mode="popLayout">
                         {visibleItems.map((item) => {
@@ -156,8 +178,6 @@ const PortfolioSection = () => {
                     </div>
                 )}
 
-                {/* Removed Photography Gallery Sub-section since activeCategory "All" is removed */}
-
                 {/* Media Modal */}
                 <Dialog open={!!selectedItem} onOpenChange={() => setSelectedItem(null)}>
                     <DialogContent className="max-w-5xl p-0 overflow-hidden bg-black border-none animate-in fade-in zoom-in duration-300">
@@ -167,23 +187,60 @@ const PortfolioSection = () => {
                         </DialogHeader>
                         <div className="flex flex-col">
                             {/* Video/Image Container */}
-                            <div className="relative pt-[56.25%] bg-black">
-                                {selectedItem && (
-                                    selectedItem.isImage ? (
-                                        <img
-                                            src={optimizeImage(selectedItem.thumbnail, { width: 1200, quality: 80 })}
-                                            alt={selectedItem.title}
-                                            className="absolute inset-0 w-full h-full object-contain"
-                                        />
-                                    ) : (
-                                        <iframe
-                                            src={selectedItem.videoUrl}
-                                            title={selectedItem.title}
-                                            className="absolute inset-0 w-full h-full"
-                                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                                            allowFullScreen
-                                        />
-                                    )
+                            <div className="relative pt-[56.25%] bg-black group/modal overflow-hidden">
+                                <AnimatePresence mode="wait">
+                                    <motion.div
+                                        key={selectedItem?.id}
+                                        initial={{ opacity: 0, x: 30 }}
+                                        animate={{ opacity: 1, x: 0 }}
+                                        exit={{ opacity: 0, x: -30 }}
+                                        transition={{ duration: 0.3, ease: "easeOut" }}
+                                        className="absolute inset-0 w-full h-full"
+                                    >
+                                        {selectedItem && (
+                                            selectedItem.isImage ? (
+                                                <img
+                                                    src={optimizeImage(selectedItem.thumbnail, { width: 1200, quality: 80 })}
+                                                    alt={selectedItem.title}
+                                                    className="w-full h-full object-contain"
+                                                />
+                                            ) : (
+                                                <iframe
+                                                    src={selectedItem.videoUrl}
+                                                    title={selectedItem.title}
+                                                    className="w-full h-full"
+                                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                                                    allowFullScreen
+                                                />
+                                            )
+                                        )}
+                                    </motion.div>
+                                </AnimatePresence>
+
+                                {/* Navigation Arrows */}
+                                {filteredItems.length > 1 && (
+                                    <>
+                                        <button
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                handlePrev();
+                                            }}
+                                            className="absolute left-4 top-1/2 -translate-y-1/2 p-3 rounded-full bg-black/40 hover:bg-black/80 text-white/80 hover:text-white border border-white/20 transition-all opacity-0 group-hover/modal:opacity-100 cursor-pointer z-50 flex items-center justify-center shadow-lg"
+                                            aria-label="Previous item"
+                                        >
+                                            <ChevronLeft size={24} />
+                                        </button>
+                                        <button
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                handleNext();
+                                            }}
+                                            className="absolute right-4 top-1/2 -translate-y-1/2 p-3 rounded-full bg-black/40 hover:bg-black/80 text-white/80 hover:text-white border border-white/20 transition-all opacity-0 group-hover/modal:opacity-100 cursor-pointer z-50 flex items-center justify-center shadow-lg"
+                                            aria-label="Next item"
+                                        >
+                                            <ChevronRight size={24} />
+                                        </button>
+                                    </>
                                 )}
                             </div>
 

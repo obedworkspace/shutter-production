@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
     Dialog,
@@ -8,6 +8,7 @@ import {
     DialogDescription,
 } from "./ui/dialog";
 import { Button } from "./ui/button";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import { galleryImages, GalleryImage } from "@/data/galleryImages";
 import { cn } from "@/lib/utils";
 import { optimizeImage } from "@/lib/image-optimizer";
@@ -29,49 +30,67 @@ const GallerySection = ({ isFiltered = false }: GallerySectionProps) => {
         setDisplayCount((prev) => prev + 12);
     };
 
-    const visibleImages = galleryImages.slice(0, displayCount);
-    const hasMore = displayCount < galleryImages.length;
+    const handleNext = () => {
+        if (!selectedImage) return;
+        const currentIndex = galleryImages.findIndex(img => img.id === selectedImage.id);
+        if (currentIndex === -1) return;
+        const nextIndex = (currentIndex + 1) % galleryImages.length;
+        setSelectedImage(galleryImages[nextIndex]);
+    };
+
+    const handlePrev = () => {
+        if (!selectedImage) return;
+        const currentIndex = galleryImages.findIndex(img => img.id === selectedImage.id);
+        if (currentIndex === -1) return;
+        const prevIndex = (currentIndex - 1 + galleryImages.length) % galleryImages.length;
+        setSelectedImage(galleryImages[prevIndex]);
+    };
+
+    useEffect(() => {
+        if (!selectedImage) return;
+        const handleKeyDown = (e: KeyboardEvent) => {
+            if (e.key === "ArrowRight") handleNext();
+            if (e.key === "ArrowLeft") handlePrev();
+        };
+        window.addEventListener("keydown", handleKeyDown);
+        return () => {
+            window.removeEventListener("keydown", handleKeyDown);
+        };
+    }, [selectedImage]);
+
+    const visibleImages = isFiltered
+        ? galleryImages.slice(0, 6)
+        : galleryImages.slice(0, displayCount);
+
+    const hasMore = !isFiltered && displayCount < galleryImages.length;
 
     return (
-        <div className={cn("py-20", !isFiltered && "border-t border-[#0C3249]/10")}>
-            {!isFiltered && (
-                <div className="text-center mb-16">
-                    <h3 className="text-3xl md:text-5xl font-bold mb-4 text-[#0C3249] dark:text-foreground">
-                        Photography Gallery
-                    </h3>
-                    <div className="w-20 h-1 bg-gold mx-auto rounded-full" />
-                    <p className="mt-6 text-muted-foreground max-w-2xl mx-auto text-lg italic">
-                        Explore our diverse photography collection across various events and projects.
-                    </p>
-                </div>
-            )}
-
-            {/* Grid */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        <div className="container mx-auto px-4 py-12">
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                 <AnimatePresence>
                     {visibleImages.map((image) => {
                         const isLoaded = loadedImages[image.id];
                         return (
                             <motion.div
+                                key={image.id}
                                 layout
                                 initial={{ opacity: 0, scale: 0.9 }}
                                 animate={{ opacity: 1, scale: 1 }}
                                 exit={{ opacity: 0, scale: 0.9 }}
-                                transition={{ duration: 0.3 }}
-                                key={image.id}
-                                className="group relative aspect-square rounded-xl overflow-hidden cursor-pointer shadow-md hover:shadow-2xl transition-all duration-500 bg-[#0C3249]/10"
+                                transition={{ duration: 0.4 }}
+                                className="relative aspect-square group overflow-hidden rounded-xl cursor-pointer bg-zinc-900"
                                 onClick={() => setSelectedImage(image)}
                             >
-                                {/* Pulse skeleton placeholder */}
+                                {/* Shimmer Placeholder */}
                                 {!isLoaded && (
-                                    <div className="absolute inset-0 bg-[#0C3249]/10 dark:bg-zinc-800 animate-pulse z-0" />
+                                    <div className="absolute inset-0 bg-[#0C3249]/10 animate-pulse" />
                                 )}
 
                                 <img
                                     src={optimizeImage(image.url, { width: 500, quality: 70 })}
                                     alt={image.title}
                                     className={cn(
-                                        "w-full h-full object-cover transition-all duration-1000 group-hover:scale-110 z-10",
+                                        "w-full h-full object-cover transition-transform duration-500 group-hover:scale-105",
                                         isLoaded ? "opacity-100 animate-in fade-in duration-500" : "opacity-0"
                                     )}
                                     onLoad={() => handleImageLoad(image.id)}
@@ -104,18 +123,55 @@ const GallerySection = ({ isFiltered = false }: GallerySectionProps) => {
 
             {/* Lightbox */}
             <Dialog open={!!selectedImage} onOpenChange={() => setSelectedImage(null)}>
-                <DialogContent className="max-w-[90vw] max-h-[90vh] p-0 overflow-hidden bg-black/95 border-none animate-in fade-in zoom-in duration-300">
+                <DialogContent className="max-w-[90vw] max-h-[90vh] p-0 overflow-hidden bg-black/95 border-none animate-in fade-in zoom-in duration-300 group/lightbox">
                     <DialogHeader className="sr-only">
                         <DialogTitle>{selectedImage?.title}</DialogTitle>
                         <DialogDescription>Full view of {selectedImage?.title}</DialogDescription>
                     </DialogHeader>
-                    <div className="relative w-full h-full flex items-center justify-center p-4">
-                        {selectedImage && (
-                            <img
-                                src={optimizeImage(selectedImage.url, { width: 1200, quality: 80 })}
-                                alt={selectedImage.title}
-                                className="max-w-full max-h-[85vh] object-contain shadow-2xl"
-                            />
+                    <div className="relative w-full h-[85vh] flex items-center justify-center p-4">
+                        <AnimatePresence mode="wait">
+                            <motion.div
+                                key={selectedImage?.id}
+                                initial={{ opacity: 0, scale: 0.95 }}
+                                animate={{ opacity: 1, scale: 1 }}
+                                exit={{ opacity: 0, scale: 0.95 }}
+                                transition={{ duration: 0.25 }}
+                                className="w-full h-full flex items-center justify-center"
+                            >
+                                {selectedImage && (
+                                    <img
+                                        src={optimizeImage(selectedImage.url, { width: 1200, quality: 80 })}
+                                        alt={selectedImage.title}
+                                        className="max-w-full max-h-[75vh] object-contain shadow-2xl"
+                                    />
+                                )}
+                            </motion.div>
+                        </AnimatePresence>
+
+                        {/* Navigation Arrows */}
+                        {galleryImages.length > 1 && (
+                            <>
+                                <button
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        handlePrev();
+                                    }}
+                                    className="absolute left-4 top-1/2 -translate-y-1/2 p-3 rounded-full bg-black/40 hover:bg-black/80 text-white/80 hover:text-white border border-white/10 transition-all opacity-0 group-hover/lightbox:opacity-100 cursor-pointer z-50 flex items-center justify-center shadow-lg"
+                                    aria-label="Previous image"
+                                >
+                                    <ChevronLeft size={24} />
+                                </button>
+                                <button
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        handleNext();
+                                    }}
+                                    className="absolute right-4 top-1/2 -translate-y-1/2 p-3 rounded-full bg-black/40 hover:bg-black/80 text-white/80 hover:text-white border border-white/10 transition-all opacity-0 group-hover/lightbox:opacity-100 cursor-pointer z-50 flex items-center justify-center shadow-lg"
+                                    aria-label="Next image"
+                                >
+                                    <ChevronRight size={24} />
+                                </button>
+                            </>
                         )}
                     </div>
                     {selectedImage && (
