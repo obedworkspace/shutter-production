@@ -10,6 +10,7 @@ import {
 import { Button } from "./ui/button";
 import { galleryImages, GalleryImage } from "@/data/galleryImages";
 import { cn } from "@/lib/utils";
+import { optimizeImage } from "@/lib/image-optimizer";
 
 interface GallerySectionProps {
     isFiltered?: boolean;
@@ -18,6 +19,11 @@ interface GallerySectionProps {
 const GallerySection = ({ isFiltered = false }: GallerySectionProps) => {
     const [selectedImage, setSelectedImage] = useState<GalleryImage | null>(null);
     const [displayCount, setDisplayCount] = useState(12);
+    const [loadedImages, setLoadedImages] = useState<Record<number, boolean>>({});
+
+    const handleImageLoad = (id: number) => {
+        setLoadedImages(prev => ({ ...prev, [id]: true }));
+    };
 
     const handleLoadMore = () => {
         setDisplayCount((prev) => prev + 12);
@@ -43,30 +49,42 @@ const GallerySection = ({ isFiltered = false }: GallerySectionProps) => {
             {/* Grid */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                 <AnimatePresence>
-                    {visibleImages.map((image) => (
-                        <motion.div
-                            layout
-                            initial={{ opacity: 0, scale: 0.9 }}
-                            animate={{ opacity: 1, scale: 1 }}
-                            exit={{ opacity: 0, scale: 0.9 }}
-                            transition={{ duration: 0.3 }}
-                            key={image.id}
-                            className="group relative aspect-square rounded-xl overflow-hidden cursor-pointer shadow-md hover:shadow-2xl transition-all duration-500"
-                            onClick={() => setSelectedImage(image)}
-                        >
-                            <img
-                                src={image.url}
-                                alt={image.title}
-                                className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110"
-                                loading="lazy"
-                            />
-                            <div className="absolute inset-0 bg-black/0 group-hover:bg-black/60 transition-colors duration-300 flex items-center justify-center">
-                                <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-300 text-white text-center p-4">
-                                    <p className="font-bold text-lg tracking-wide">{image.title}</p>
+                    {visibleImages.map((image) => {
+                        const isLoaded = loadedImages[image.id];
+                        return (
+                            <motion.div
+                                layout
+                                initial={{ opacity: 0, scale: 0.9 }}
+                                animate={{ opacity: 1, scale: 1 }}
+                                exit={{ opacity: 0, scale: 0.9 }}
+                                transition={{ duration: 0.3 }}
+                                key={image.id}
+                                className="group relative aspect-square rounded-xl overflow-hidden cursor-pointer shadow-md hover:shadow-2xl transition-all duration-500 bg-[#0C3249]/10"
+                                onClick={() => setSelectedImage(image)}
+                            >
+                                {/* Pulse skeleton placeholder */}
+                                {!isLoaded && (
+                                    <div className="absolute inset-0 bg-[#0C3249]/10 dark:bg-zinc-800 animate-pulse z-0" />
+                                )}
+
+                                <img
+                                    src={optimizeImage(image.url, { width: 500, quality: 70 })}
+                                    alt={image.title}
+                                    className={cn(
+                                        "w-full h-full object-cover transition-all duration-1000 group-hover:scale-110 z-10",
+                                        isLoaded ? "opacity-100 animate-in fade-in duration-500" : "opacity-0"
+                                    )}
+                                    onLoad={() => handleImageLoad(image.id)}
+                                    loading="lazy"
+                                />
+                                <div className="absolute inset-0 bg-black/0 group-hover:bg-black/60 transition-colors duration-300 flex items-center justify-center z-20">
+                                    <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-300 text-white text-center p-4">
+                                        <p className="font-bold text-lg tracking-wide">{image.title}</p>
+                                    </div>
                                 </div>
-                            </div>
-                        </motion.div>
-                    ))}
+                            </motion.div>
+                        );
+                    })}
                 </AnimatePresence>
             </div>
 
@@ -94,7 +112,7 @@ const GallerySection = ({ isFiltered = false }: GallerySectionProps) => {
                     <div className="relative w-full h-full flex items-center justify-center p-4">
                         {selectedImage && (
                             <img
-                                src={selectedImage.url}
+                                src={optimizeImage(selectedImage.url, { width: 1200, quality: 80 })}
                                 alt={selectedImage.title}
                                 className="max-w-full max-h-[85vh] object-contain shadow-2xl"
                             />

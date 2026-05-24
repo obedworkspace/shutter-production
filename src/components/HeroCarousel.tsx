@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "./ui/button";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { optimizeImage } from "@/lib/image-optimizer";
 
 const slides = [
     {
@@ -29,16 +30,22 @@ const HeroCarousel = () => {
     const [currentSlide, setCurrentSlide] = useState(0);
 
     useEffect(() => {
-        // Preload all images so they are cached before the slide transitions
-        slides.forEach((slide) => {
-            const img = new Image();
-            img.src = slide.image;
-        });
+        // Defer preloading slide 2 and 3 so they do not compete with critical page load bandwidth
+        const preloadTimeout = setTimeout(() => {
+            slides.slice(1).forEach((slide) => {
+                const img = new Image();
+                img.src = optimizeImage(slide.image, { width: 1920, quality: 80 });
+            });
+        }, 3000); // 3 seconds delay after page mount
 
         const timer = setInterval(() => {
             setCurrentSlide((prev) => (prev + 1) % slides.length);
         }, 6000);
-        return () => clearInterval(timer);
+
+        return () => {
+            clearTimeout(preloadTimeout);
+            clearInterval(timer);
+        };
     }, []);
 
     const nextSlide = () => setCurrentSlide((prev) => (prev + 1) % slides.length);
@@ -56,8 +63,10 @@ const HeroCarousel = () => {
                     className="absolute inset-0"
                 >
                     <div className="absolute inset-0">
+                        {/* Premium dark shimmer placeholder backdrop */}
+                        <div className="absolute inset-0 bg-[#0C3249]/20 animate-pulse" />
                         <img
-                            src={slides[currentSlide].image}
+                            src={optimizeImage(slides[currentSlide].image, { width: 1920, quality: 80 })}
                             alt={slides[currentSlide].title}
                             className="w-full h-full object-cover"
                             loading="eager"

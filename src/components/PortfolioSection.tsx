@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Play } from "lucide-react";
+import { optimizeImage } from "@/lib/image-optimizer";
 import {
     Dialog,
     DialogContent,
@@ -19,6 +20,11 @@ const PortfolioSection = () => {
     const [activeMediaType, setActiveMediaType] = useState("Videos");
     const [selectedItem, setSelectedItem] = useState<PortfolioItem | null>(null);
     const [visibleCount, setVisibleCount] = useState(6);
+    const [loadedImages, setLoadedImages] = useState<Record<number, boolean>>({});
+
+    const handleImageLoad = (id: number) => {
+        setLoadedImages(prev => ({ ...prev, [id]: true }));
+    };
 
     const filteredItems = portfolioItems.filter(item => {
         const matchesCategory = item.category === activeCategory;
@@ -91,36 +97,49 @@ const PortfolioSection = () => {
                     className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10"
                 >
                     <AnimatePresence mode="popLayout">
-                        {visibleItems.map((item) => (
-                            <motion.div
-                                layout
-                                initial={{ opacity: 0, y: 20 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                exit={{ opacity: 0, scale: 0.95 }}
-                                transition={{ duration: 0.4, ease: "easeOut" }}
-                                key={item.id}
-                                className="group relative aspect-video rounded-2xl overflow-hidden cursor-pointer shadow-xl bg-black"
-                                onClick={() => setSelectedItem(item)}
-                            >
-                                <img
-                                    src={item.thumbnail}
-                                    alt={item.title}
-                                    className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-[1.03]"
-                                />
+                        {visibleItems.map((item) => {
+                            const isLoaded = loadedImages[item.id];
+                            return (
+                                <motion.div
+                                    layout
+                                    initial={{ opacity: 0, y: 20 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    exit={{ opacity: 0, scale: 0.95 }}
+                                    transition={{ duration: 0.4, ease: "easeOut" }}
+                                    key={item.id}
+                                    className="group relative aspect-video rounded-2xl overflow-hidden cursor-pointer shadow-xl bg-[#0C3249]/10"
+                                    onClick={() => setSelectedItem(item)}
+                                >
+                                    {/* Shimmer Placeholder */}
+                                    {!isLoaded && (
+                                        <div className="absolute inset-0 bg-[#0C3249]/10 dark:bg-zinc-800 animate-pulse z-0" />
+                                    )}
 
-                                {/* Cinematic Overlay */}
-                                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/10 to-transparent opacity-80 group-hover:opacity-100 transition-opacity duration-500" />
+                                    <img
+                                        src={optimizeImage(item.thumbnail, { width: 600, quality: 75 })}
+                                        alt={item.title}
+                                        className={cn(
+                                            "w-full h-full object-cover transition-all duration-1000 group-hover:scale-[1.03] z-10",
+                                            isLoaded ? "opacity-100 animate-in fade-in duration-500" : "opacity-0"
+                                        )}
+                                        onLoad={() => handleImageLoad(item.id)}
+                                        loading="lazy"
+                                    />
 
-                                {/* Center Play Icon */}
-                                {!item.isImage && (
-                                    <div className="absolute inset-0 flex items-center justify-center">
-                                        <div className="w-16 h-16 bg-white/10 backdrop-blur-sm border border-white/20 rounded-full flex items-center justify-center text-white scale-90 opacity-0 group-hover:scale-100 group-hover:opacity-100 transition-all duration-500 shadow-2xl">
-                                            <Play fill="white" size={32} className="ml-1" />
+                                    {/* Cinematic Overlay */}
+                                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/10 to-transparent opacity-80 group-hover:opacity-100 transition-opacity duration-500 z-20" />
+
+                                    {/* Center Play Icon */}
+                                    {!item.isImage && (
+                                        <div className="absolute inset-0 flex items-center justify-center z-30">
+                                            <div className="w-16 h-16 bg-white/10 backdrop-blur-sm border border-white/20 rounded-full flex items-center justify-center text-white scale-90 opacity-0 group-hover:scale-100 group-hover:opacity-100 transition-all duration-500 shadow-2xl">
+                                                <Play fill="white" size={32} className="ml-1" />
+                                            </div>
                                         </div>
-                                    </div>
-                                )}
-                            </motion.div>
-                        ))}
+                                    )}
+                                </motion.div>
+                            );
+                        })}
                     </AnimatePresence>
                 </motion.div>
 
@@ -152,7 +171,7 @@ const PortfolioSection = () => {
                                 {selectedItem && (
                                     selectedItem.isImage ? (
                                         <img
-                                            src={selectedItem.thumbnail}
+                                            src={optimizeImage(selectedItem.thumbnail, { width: 1200, quality: 80 })}
                                             alt={selectedItem.title}
                                             className="absolute inset-0 w-full h-full object-contain"
                                         />
