@@ -33,9 +33,46 @@ const slides = [
     },
 ];
 
+const showreelVideos = [
+    {
+        id: 1,
+        title: "Commercial Showreel I",
+        url: "https://www.youtube.com/embed/y4z0wVTi-ko",
+    },
+    {
+        id: 2,
+        title: "Commercial Showreel II",
+        url: "https://www.youtube.com/embed/XFBdBzwXbk4",
+    },
+    {
+        id: 3,
+        title: "Commercial Showreel III",
+        url: "https://www.youtube.com/embed/TKsKVoyp8fg",
+    },
+    {
+        id: 4,
+        title: "Commercial Showreel IV",
+        url: "https://www.youtube.com/embed/GuMUYlnq0Zs",
+    },
+    {
+        id: 5,
+        title: "Commercial Showreel V",
+        url: "https://www.youtube.com/embed/HWClrASIpb0",
+    },
+];
+
 const HeroCarousel = () => {
     const [currentSlide, setCurrentSlide] = useState(0);
     const [isReelOpen, setIsReelOpen] = useState(false);
+    const [currentReelIndex, setCurrentReelIndex] = useState(0);
+
+    const handleNextReel = () => {
+        setCurrentReelIndex((prev) => (prev + 1) % showreelVideos.length);
+    };
+
+    const handlePrevReel = () => {
+        setCurrentReelIndex((prev) => (prev - 1 + showreelVideos.length) % showreelVideos.length);
+    };
 
     useEffect(() => {
         // Defer preloading slide 2 and 3 so they do not compete with critical page load bandwidth
@@ -55,6 +92,18 @@ const HeroCarousel = () => {
             clearInterval(timer);
         };
     }, []);
+
+    useEffect(() => {
+        if (!isReelOpen) return;
+        const handleKeyDown = (e: KeyboardEvent) => {
+            if (e.key === "ArrowRight") handleNextReel();
+            if (e.key === "ArrowLeft") handlePrevReel();
+        };
+        window.addEventListener("keydown", handleKeyDown);
+        return () => {
+            window.removeEventListener("keydown", handleKeyDown);
+        };
+    }, [isReelOpen]);
 
     const nextSlide = () => setCurrentSlide((prev) => (prev + 1) % slides.length);
     const prevSlide = () => setCurrentSlide((prev) => (prev - 1 + slides.length) % slides.length);
@@ -103,7 +152,10 @@ const HeroCarousel = () => {
                         <motion.button
                             whileHover={{ scale: 1.05, borderColor: "rgba(197,168,128,0.8)" }}
                             whileTap={{ scale: 0.95 }}
-                            onClick={() => setIsReelOpen(true)}
+                            onClick={() => {
+                                setCurrentReelIndex(0);
+                                setIsReelOpen(true);
+                            }}
                             className="group flex items-center gap-3 bg-black/40 backdrop-blur-md border border-white/20 hover:border-gold/50 px-6 py-3 rounded-full text-xs font-semibold tracking-widest uppercase transition-all duration-300 mb-8 cursor-pointer"
                         >
                             <span className="flex h-7 w-7 items-center justify-center rounded-full bg-gold text-black group-hover:bg-[#0C3249] group-hover:text-white transition-colors duration-300">
@@ -172,21 +224,58 @@ const HeroCarousel = () => {
 
             {/* Showreel Modal */}
             <Dialog open={isReelOpen} onOpenChange={setIsReelOpen}>
-                <DialogContent className="max-w-5xl p-0 overflow-hidden bg-black border-none animate-in fade-in zoom-in duration-300">
+                <DialogContent className="max-w-5xl p-0 overflow-hidden bg-black border-none animate-in fade-in zoom-in duration-300 group/reel">
                     <DialogHeader className="sr-only">
-                        <DialogTitle>Shutter Production Showreel</DialogTitle>
-                        <DialogDescription>Watch our cinematic showreel.</DialogDescription>
+                        <DialogTitle>Shutter Production Showreels</DialogTitle>
+                        <DialogDescription>Cinematic showreel videos.</DialogDescription>
                     </DialogHeader>
-                    <div className="relative pt-[56.25%] bg-black">
-                        {isReelOpen && (
-                            <iframe
-                                src="https://www.youtube.com/embed/y4z0wVTi-ko?autoplay=1"
-                                title="Shutter Production Showreel"
-                                className="absolute inset-0 w-full h-full border-none"
-                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                                allowFullScreen
-                            />
-                        )}
+                    <div className="relative pt-[56.25%] bg-black overflow-hidden">
+                        <AnimatePresence mode="wait">
+                            <motion.div
+                                key={currentReelIndex}
+                                initial={{ opacity: 0, x: 30 }}
+                                animate={{ opacity: 1, x: 0 }}
+                                exit={{ opacity: 0, x: -30 }}
+                                transition={{ duration: 0.3, ease: "easeOut" }}
+                                className="absolute inset-0 w-full h-full"
+                            >
+                                {isReelOpen && (
+                                    <iframe
+                                        src={`${showreelVideos[currentReelIndex].url}?autoplay=1`}
+                                        title={showreelVideos[currentReelIndex].title}
+                                        className="w-full h-full border-none"
+                                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                                        allowFullScreen
+                                    />
+                                )}
+                            </motion.div>
+                        </AnimatePresence>
+
+                        {/* Navigation Arrows for Showreel Carousel */}
+                        <button
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                handlePrevReel();
+                            }}
+                            className="absolute left-4 top-1/2 -translate-y-1/2 p-3 rounded-full bg-black/40 hover:bg-black/80 text-white/80 hover:text-white border border-white/20 transition-all opacity-0 group-hover/reel:opacity-100 cursor-pointer z-50 flex items-center justify-center shadow-lg"
+                            aria-label="Previous showreel"
+                        >
+                            <ChevronLeft size={24} />
+                        </button>
+                        <button
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                handleNextReel();
+                            }}
+                            className="absolute right-4 top-1/2 -translate-y-1/2 p-3 rounded-full bg-black/40 hover:bg-black/80 text-white/80 hover:text-white border border-white/20 transition-all opacity-0 group-hover/reel:opacity-100 cursor-pointer z-50 flex items-center justify-center shadow-lg"
+                            aria-label="Next showreel"
+                        >
+                            <ChevronRight size={24} />
+                        </button>
+                    </div>
+                    {/* Active Reel Title Overlay */}
+                    <div className="absolute bottom-4 left-6 text-white/90 text-sm font-semibold uppercase tracking-widest bg-black/60 px-4 py-1.5 rounded-full border border-white/10 z-50">
+                        {showreelVideos[currentReelIndex].title} ({currentReelIndex + 1}/{showreelVideos.length})
                     </div>
                 </DialogContent>
             </Dialog>
