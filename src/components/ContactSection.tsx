@@ -51,7 +51,7 @@ const ContactSection = () => {
                     <div className="w-24 h-1.5 bg-gold mx-auto rounded-full" />
                 </div>
 
-                <div className="grid lg:grid-cols-2 gap-12 bg-card border border-border/50 rounded-2xl shadow-xl overflow-hidden">
+                <div className="grid lg:grid-cols-2 gap-0 bg-background/40 backdrop-blur-xl border border-border rounded-3xl shadow-2xl overflow-hidden transition-all duration-500 hover:border-gold/30">
                     {/* Contact Info */}
                     <div className="bg-[#0C3249] p-12 text-white flex flex-col justify-between relative overflow-hidden">
                         {/* Decorative blob inside contact info */}
@@ -99,7 +99,7 @@ const ContactSection = () => {
                     </div>
 
                     {/* Contact Form */}
-                    <div className="p-12 bg-white dark:bg-card">
+                    <div className="p-12 bg-background/30 dark:bg-card/30 backdrop-blur-md">
                         <form onSubmit={handleSubmit} className="space-y-6">
                             <div className="grid md:grid-cols-2 gap-6">
                                 <div className="space-y-2">
