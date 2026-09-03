@@ -114,7 +114,7 @@ const ContactSection = () => {
 
                             <div className="space-y-2">
                                 <Label htmlFor="project-type">Project Type</Label>
-                                <Input id="project-type" placeholder="e.g. Documentary, Corporate, Event" />
+                                <Input id="project-type" placeholder="e.g. Documentary, Live Streaming, Motion Graphics" />
                             </div>
 
                             <div className="space-y-2">

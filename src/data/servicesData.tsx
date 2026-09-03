@@ -5,9 +5,9 @@ import {
     Video,
     Clapperboard,
     Plane,
-    MonitorPlay,
+    Layers,
     Share2,
-    Camera
+    Radio
 } from "lucide-react";
 
 export interface ServiceDetail {
@@ -134,26 +134,26 @@ export const servicesData: ServiceDetail[] = [
         idealFor: ["Real Estate Developers", "Tourism Boards & Travel Agencies", "Civil Infrastructure & Construction", "Outdoor Festivals"]
     },
     {
-        id: "post-production",
-        title: "Video Editing & Post Production",
-        icon: <MonitorPlay className="w-10 h-10" />,
-        shortDescription: "Editing, color grading, and sound design excellence.",
-        tagline: "Precision editing, industry-grade color grading, visual effects, and immersive sound engineering.",
-        fullDescription: "Raw footage transformed into a cinematic masterpiece. Even if you already have existing footage, our post-production suite delivers top-tier narrative pacing, DaVinci Resolve color grading, dialogue cleanup, sound design, visual effects, and multi-language subtitling to bring your project to perfection.",
+        id: "motion-graphics",
+        title: "Motion Graphics",
+        icon: <Layers className="w-10 h-10" />,
+        shortDescription: "Dynamic 2D/3D animations, title sequences, and visual effects.",
+        tagline: "Dynamic 2D & 3D animations, kinetic typography, and visual branding that bring ideas to life.",
+        fullDescription: "Transform complex concepts, data, and brand narratives into captivating motion experiences. Our motion graphics designers produce high-impact 2D/3D explainer videos, logo animations, kinetic typography, sleek title sequences, and broadcast packaging engineered to elevate brand prestige and retain viewer attention.",
         deliverables: [
-            "Multi-Camera Synchronization & Story Pacing Optimization",
-            "DaVinci Resolve Professional Color Correction & Cinematic Grading",
-            "Sound Design, Dialogue Restoration & Foley Audio Sweetening",
-            "Dynamic Motion Graphics, Animated Titles & Lower Thirds",
-            "ProRes Master Files & Codec-Optimized Web/Broadcast Deliverables"
+            "2D & 3D Animated Explainer Videos & Infographics",
+            "Broadcast Title Sequences, Logo Reveals & Brand Bumpers",
+            "Kinetic Typography, Animated Statistics & Data Visualizations",
+            "Custom Lower Thirds, Transitions & UI/App Walkthroughs",
+            "Multi-Resolution Delivery (16:9 4K Web, 9:16 Social, Alpha Channels)"
         ],
         process: [
-            { step: "01", title: "Media Ingestion", desc: "Footage verification, proxy generation, and meticulous media organization." },
-            { step: "02", title: "Story Assembly", desc: "Crafting the rough cut and shaping emotional tempo and storytelling." },
-            { step: "03", title: "Color & Sound", desc: "Balancing color science, LUT application, audio leveling, and mixdown." },
-            { step: "04", title: "Master Export", desc: "Client review iterations and final delivery in master broadcast codecs." }
+            { step: "01", title: "Concept & Style", desc: "Moodboards, styleframes, and visual art direction aligned with your brand." },
+            { step: "02", title: "Storyboarding", desc: "Detailed illustrated storyboard defining scene timing, transitions, and pacing." },
+            { step: "03", title: "Animation & VFX", desc: "Keyframing, 3D camera moves, physics simulations, and synchronized sound design." },
+            { step: "04", title: "Master Export", desc: "Polished multi-format render in 4K ProRes and transparent alpha formats." }
         ],
-        idealFor: ["Content Creators", "Independent Producers", "Creative Agencies", "Corporate Marketing Teams"]
+        idealFor: ["Tech Companies & SaaS", "Financial Institutions & Fintechs", "Advertising Agencies", "Broadcasters & Digital Creators"]
     },
     {
         id: "social-media",
@@ -178,25 +178,25 @@ export const servicesData: ServiceDetail[] = [
         idealFor: ["Hospitality & Restaurants", "Influencers & Personal Brands", "Retail & Lifestyle Brands", "Event Promoters"]
     },
     {
-        id: "event-videography",
-        title: "Event Videography",
-        icon: <Camera className="w-10 h-10" />,
-        shortDescription: "Capturing the best moments of your special events.",
-        tagline: "Comprehensive, discreet coverage of international summits, corporate galas, and celebrations.",
-        fullDescription: "From international diplomatic summits and corporate conferences in Kigali to milestone galas and weddings, our crew captures every critical moment with discreet, multi-angle coverage. We deliver both same-day or next-day highlight sizzle reels and comprehensive full-length recordings.",
+        id: "live-streaming",
+        title: "Live Streaming",
+        icon: <Radio className="w-10 h-10" />,
+        shortDescription: "Seamless multi-camera broadcast for summits, conferences, and events.",
+        tagline: "High-definition, broadcast-grade live streaming for international summits, conferences, and hybrid events.",
+        fullDescription: "Broadcast your event seamlessly to a global audience with zero downtime. From high-level diplomatic conferences and corporate annual meetings in Kigali to product launches and concerts, our live streaming team delivers multi-camera switching, live lower thirds, real-time audio engineering, and simultaneous multi-platform broadcasting.",
         deliverables: [
-            "Multi-Camera Coverage of Speeches, Keynotes & Audience Reactions",
-            "Express 60-Second Social Media Sizzle Reel (Fast Turnaround)",
-            "Full-Length High-Definition Recordings of Speeches & Panels",
-            "Dedicated Soundboard Audio Feeds & Wireless Lapel Mics",
-            "Livestreaming & Multi-Platform Broadcasting Support"
+            "Multi-Camera Live Switching & Direction (Full HD / 4K Broadcast)",
+            "Simultaneous Multi-Platform Streaming (YouTube, LinkedIn, Facebook, Zoom, Custom RTMP)",
+            "Live Lower Thirds, Speaker Bios & Branded On-Screen Graphics",
+            "Direct Soundboard Audio Feeds & Dedicated Wireless Microphones",
+            "Immediate Full-Session Archival Master Recordings Provided Post-Event"
         ],
         process: [
-            { step: "01", title: "Schedule Walkthrough", desc: "Reviewing the event timeline, VIP arrivals, and key moments." },
-            { step: "02", title: "Live Coverage", desc: "Discreet multi-camera documentation with steady gimbals and roaming rigs." },
-            { step: "03", title: "Express Highlight", desc: "Same-day or 24-hour delivery of an energetic recap for immediate press." },
-            { step: "04", title: "Complete Archive", desc: "Full session archives and color-graded highlights delivered in full HD/4K." }
+            { step: "01", title: "Site Survey", desc: "Venue walkthrough, dedicated internet speed testing, and redundant failover planning." },
+            { step: "02", title: "Rigging & Prep", desc: "Setting up multi-camera positions, video switchers, audio feeds, and custom graphic templates." },
+            { step: "03", title: "Live Broadcast", desc: "Real-time camera switching, active audio monitoring, and continuous transmission oversight." },
+            { step: "04", title: "Archive Handoff", desc: "Immediate handoff of full-length uncompressed recordings and streaming statistics." }
         ],
-        idealFor: ["International Summits & Conferences", "Corporate Galas & Awards", "Festivals & Concerts", "Weddings & Milestone Events"]
+        idealFor: ["International Summits & Conferences", "Corporate Annual General Meetings", "Institutions & Universities", "Festivals & Hybrid Gatherings"]
     }
 ];
