@@ -27,8 +27,13 @@ const PortfolioSection = () => {
     };
 
     const filteredItems = portfolioItems.filter(item => {
+        if (activeMediaType === "Motion Graphics") {
+            return item.category === "Motion Graphics";
+        }
         const matchesCategory = item.category === activeCategory;
-        const matchesMediaType = activeMediaType === "Videos" ? !item.isImage : item.isImage;
+        const matchesMediaType = activeMediaType === "Videos" 
+            ? (!item.isImage && item.category !== "Motion Graphics") 
+            : item.isImage;
         return matchesCategory && matchesMediaType;
     });
     const visibleItems = filteredItems.slice(0, visibleCount);
@@ -70,9 +75,9 @@ const PortfolioSection = () => {
                     </h2>
                     <div className="w-24 h-1.5 bg-gold mx-auto rounded-full mb-12" />
 
-                    {/* Media Type Selector (Videos / Pictures) */}
-                    <div className="flex justify-center gap-4 mb-8">
-                        {["Videos", "Pictures"].map((type) => (
+                    {/* Media Type Selector (Videos / Pictures / Motion Graphics) */}
+                    <div className="flex flex-wrap justify-center gap-4 mb-8">
+                        {["Videos", "Pictures", "Motion Graphics"].map((type) => (
                             <button
                                 key={type}
                                 onClick={() => {
@@ -91,26 +96,28 @@ const PortfolioSection = () => {
                         ))}
                     </div>
 
-                    {/* Category Selector */}
-                    <div className="flex flex-wrap justify-center gap-4">
-                        {categories.map((category) => (
-                            <button
-                                key={category}
-                                onClick={() => {
-                                    setActiveCategory(category);
-                                    setVisibleCount(6);
-                                }}
-                                className={cn(
-                                    "px-8 py-3 rounded-full text-sm font-bold tracking-wider transition-all duration-300 border cursor-pointer",
-                                    activeCategory === category
-                                        ? "bg-[#0C3249] text-white border-[#0C3249] shadow-lg shadow-[#0C3249]/20"
-                                        : "bg-transparent text-muted-foreground border-border hover:border-foreground/30 hover:text-foreground"
-                                )}
-                            >
-                                {category}
-                            </button>
-                        ))}
-                    </div>
+                    {/* Category Selector (Videos & Pictures) */}
+                    {activeMediaType !== "Motion Graphics" && (
+                        <div className="flex flex-wrap justify-center gap-4">
+                            {categories.map((category) => (
+                                <button
+                                    key={category}
+                                    onClick={() => {
+                                        setActiveCategory(category);
+                                        setVisibleCount(6);
+                                    }}
+                                    className={cn(
+                                        "px-8 py-3 rounded-full text-sm font-bold tracking-wider transition-all duration-300 border cursor-pointer",
+                                        activeCategory === category
+                                            ? "bg-[#0C3249] text-white border-[#0C3249] shadow-lg shadow-[#0C3249]/20"
+                                            : "bg-transparent text-muted-foreground border-border hover:border-foreground/30 hover:text-foreground"
+                                    )}
+                                >
+                                    {category}
+                                </button>
+                            ))}
+                        </div>
+                    )}
                 </div>
 
                 {/* Grid */}
