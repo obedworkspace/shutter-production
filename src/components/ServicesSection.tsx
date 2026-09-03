@@ -1,11 +1,9 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import {
-    ArrowRight,
     CheckCircle2,
     MessageCircle,
-    Send,
-    Sparkles
+    Send
 } from "lucide-react";
 import { servicesData, ServiceDetail } from "@/data/servicesData";
 import {
@@ -67,31 +65,20 @@ const ServicesSection = () => {
                             }}
                             role="button"
                             tabIndex={0}
-                            className="bg-white dark:bg-card p-8 rounded-2xl shadow-sm border border-gray-100 dark:border-border/60 hover:border-gold/50 dark:hover:border-gold/50 hover:shadow-2xl transition-all duration-300 group hover:-translate-y-2 relative overflow-hidden flex flex-col justify-between cursor-pointer focus:outline-none focus:ring-2 focus:ring-gold/50"
+                            className="bg-white dark:bg-card p-10 rounded-2xl shadow-sm border border-gray-100 hover:border-[#0C3249]/20 dark:hover:border-gold/30 hover:shadow-xl transition-all duration-300 group hover:-translate-y-2 relative overflow-hidden cursor-pointer focus:outline-none focus:ring-2 focus:ring-gold/50"
                         >
                             {/* Decorative hover gradient overlay */}
-                            <div className="absolute inset-0 bg-gradient-to-br from-gold/5 via-transparent to-[#0C3249]/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
+                            <div className="absolute inset-0 bg-gradient-to-br from-[#0C3249]/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
 
-                            <div>
-                                <div className="text-[#0C3249] dark:text-white group-hover:text-gold transition-colors duration-300 mb-6 transform group-hover:scale-110 origin-left inline-block">
-                                    {service.icon}
-                                </div>
-                                <h3 className="text-xl font-bold mb-3 text-gray-900 dark:text-white group-hover:text-[#0C3249] dark:group-hover:text-gold transition-colors duration-300">
-                                    {service.title}
-                                </h3>
-                                <p className="text-[#64748b] dark:text-muted-foreground leading-relaxed text-sm">
-                                    {service.shortDescription}
-                                </p>
+                            <div className="text-[#0C3249] dark:text-white group-hover:text-gold transition-colors duration-300 mb-6 transform group-hover:scale-110 origin-left inline-block">
+                                {service.icon}
                             </div>
-
-                            {/* Card footer CTA affordance */}
-                            <div className="mt-6 pt-4 border-t border-gray-100 dark:border-white/5 flex items-center justify-between text-xs font-semibold text-[#0C3249] dark:text-gold group-hover:text-gold transition-colors">
-                                <span className="flex items-center gap-1.5">
-                                    <Sparkles className="w-3.5 h-3.5" />
-                                    Learn More
-                                </span>
-                                <ArrowRight className="w-4 h-4 transform group-hover:translate-x-1.5 transition-transform duration-200" />
-                            </div>
+                            <h3 className="text-xl font-bold mb-3 text-gray-900 dark:text-white group-hover:text-[#0C3249] dark:group-hover:text-gold transition-colors duration-300">
+                                {service.title}
+                            </h3>
+                            <p className="text-[#64748b] dark:text-muted-foreground leading-relaxed group-hover:text-gray-700 dark:group-hover:text-gray-300 transition-colors duration-300 relative z-10">
+                                {service.shortDescription}
+                            </p>
                         </motion.div>
                     ))}
                 </div>
