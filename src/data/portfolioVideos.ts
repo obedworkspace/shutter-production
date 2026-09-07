@@ -209,6 +209,15 @@ export const portfolioItems: PortfolioItem[] = [
         "description": "A selection from our documentary portfolio."
     },
     {
+        "id": 21,
+        "title": "",
+        "category": "Documentary",
+        "thumbnail": "https://img.youtube.com/vi/wQHgpZl3jPM/maxresdefault.jpg",
+        "videoUrl": "https://www.youtube.com/embed/wQHgpZl3jPM",
+        "duration": "",
+        "description": "A selection from our documentary portfolio."
+    },
+    {
         "id": 128,
         "title": "",
         "category": "Documentary",
@@ -218,11 +227,20 @@ export const portfolioItems: PortfolioItem[] = [
         "description": "A selection from our documentary portfolio."
     },
     {
-        "id": 21,
+        "id": 143,
         "title": "",
         "category": "Documentary",
-        "thumbnail": "https://img.youtube.com/vi/wQHgpZl3jPM/maxresdefault.jpg",
-        "videoUrl": "https://www.youtube.com/embed/wQHgpZl3jPM",
+        "thumbnail": "https://img.youtube.com/vi/ZiQGm-keQMk/maxresdefault.jpg",
+        "videoUrl": "https://www.youtube.com/embed/ZiQGm-keQMk",
+        "duration": "",
+        "description": "A selection from our documentary portfolio."
+    },
+    {
+        "id": 144,
+        "title": "",
+        "category": "Documentary",
+        "thumbnail": "https://img.youtube.com/vi/ceFGBQ_Ae3Q/maxresdefault.jpg",
+        "videoUrl": "https://www.youtube.com/embed/ceFGBQ_Ae3Q",
         "duration": "",
         "description": "A selection from our documentary portfolio."
     },
