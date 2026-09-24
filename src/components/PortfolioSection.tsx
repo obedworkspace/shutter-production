@@ -11,7 +11,7 @@ import {
 } from "./ui/dialog";
 import { Button } from "./ui/button";
 import { cn } from "@/lib/utils";
-const categories = ["Documentary", "Corporate", "Commercial"];
+const categories = ["Documentary", "Corporate", "Live streams"];
 
 import { portfolioItems, PortfolioItem } from "../data/portfolioVideos";
 
