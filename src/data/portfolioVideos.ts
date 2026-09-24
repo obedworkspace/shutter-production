@@ -14,8 +14,8 @@ export const portfolioItems: PortfolioItem[] = [
         "id": 1,
         "title": "",
         "category": "Corporate",
-        "thumbnail": "https://img.youtube.com/vi/vqp7KGCfN68/maxresdefault.jpg",
-        "videoUrl": "https://www.youtube.com/embed/vqp7KGCfN68",
+        "thumbnail": "https://img.youtube.com/vi/QifiVvUGFsM/maxresdefault.jpg",
+        "videoUrl": "https://www.youtube.com/embed/QifiVvUGFsM",
         "duration": "",
         "description": "A selection from our corporate portfolio."
     },
@@ -50,8 +50,8 @@ export const portfolioItems: PortfolioItem[] = [
         "id": 5,
         "title": "",
         "category": "Corporate",
-        "thumbnail": "https://img.youtube.com/vi/QifiVvUGFsM/maxresdefault.jpg",
-        "videoUrl": "https://www.youtube.com/embed/QifiVvUGFsM",
+        "thumbnail": "https://img.youtube.com/vi/vqp7KGCfN68/maxresdefault.jpg",
+        "videoUrl": "https://www.youtube.com/embed/vqp7KGCfN68",
         "duration": "",
         "description": "A selection from our corporate portfolio."
     },
